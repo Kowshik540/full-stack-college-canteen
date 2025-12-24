@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusBites - College Canteen Ordering System</title>
+    <meta name="description" content="Order ahead from your college canteen and skip the queue. Fresh, tasty, and ready when you are!">
+    <meta name="keywords" content="canteen, college, food ordering, campus food, quick order">
+    <meta name="theme-color" content="#f97316">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- ============================================
+         MAIN PAGE
+         ============================================ -->
+    <div id="mainPage" class="page active">
+        <header class="header">
+            <div class="header-content">
+                <a href="#" class="logo" onclick="showPage('mainPage'); return false;">
+                    <div class="logo-icon">🍽️</div>
+                    <div class="logo-text">Campus<span>Bites</span></div>
+                </a>
+                <nav class="nav">
+                    <button class="nav-btn active" onclick="showPage('mainPage')">Menu</button>
+                    <button class="nav-btn" onclick="showPage('ordersPage')" id="myOrdersBtn" style="display:none;">My Orders</button>
+                    <button class="nav-btn" onclick="showPage('adminPage')" id="adminBtn" style="display:none;">Dashboard</button>
+                </nav>
+                <div class="header-actions">
+                    <button class="cart-btn" onclick="openCart()" id="cartBtnMain" aria-label="Open cart">
+                        🛒
+                        <span class="cart-badge" id="cartBadge">0</span>
+                    </button>
+                    <button class="login-btn" onclick="showPage('loginPage')" id="loginBtnNav">
+                        Login
+                    </button>
+                    <button class="nav-btn" onclick="logout()" id="logoutBtn" style="display:none;">
+                        <span id="userNameDisplay"></span> | Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+        <section class="hero">
+            <h1>Delicious Food,<br><span>Zero Wait Time</span></h1>
+            <p>Order ahead from your college canteen and skip the queue. Fresh, tasty, and ready when you are!</p>
+            <div class="search-box">
+                <input type="text" 
+                       id="searchInput" 
+                       placeholder="Search for your favorite food..." 
+                       autocomplete="off"
+                       aria-label="Search menu">
+            </div>
+        </section>
+
+        <section class="menu-section">
+            <h2 class="section-title scroll-animate">Our Menu</h2>
+            <div class="categories" id="categories"></div>
+            <div class="menu-grid" id="menuGrid"></div>
+        </section>
+
+        <footer class="footer">
+            <p>© 2024 CampusBites. Made with ❤️ for hungry students.</p>
+            <p style="font-size: 0.75rem; margin-top: 0.5rem; opacity: 0.7;">
+                Press <kbd style="background: var(--card); padding: 2px 6px; border-radius: 4px;">Ctrl</kbd> + 
+                <kbd style="background: var(--card); padding: 2px 6px; border-radius: 4px;">K</kbd> to search |
+                <kbd style="background: var(--card); padding: 2px 6px; border-radius: 4px;">Ctrl</kbd> + 
+                <kbd style="background: var(--card); padding: 2px 6px; border-radius: 4px;">B</kbd> to open cart
+            </p>
+        </footer>
+    </div>
+
+    <!-- ============================================
+         LOGIN PAGE
+         ============================================ -->
+    <div id="loginPage" class="page">
+        <div class="login-page">
+            <div class="login-card">
+                <a href="#" onclick="showPage('mainPage'); return false;" class="back-link">
+                    ← Back to Menu
+                </a>
+                <div class="login-logo">
+                    <div class="login-logo-icon">🍽️</div>
+                    <h2>Welcome Back!</h2>
+                    <p>Login to order your favorite food</p>
+                </div>
+                <div class="login-toggle">
+                    <button class="login-toggle-btn active" id="studentToggle" onclick="setLoginType('student')">
+                        👨‍🎓 Student
+                    </button>
+                    <button class="login-toggle-btn" id="adminToggle" onclick="setLoginType('admin')">
+                        🛡️ Admin
+                    </button>
+                </div>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label" id="loginLabel">Roll Number</label>
+                        <input type="text" 
+                               class="form-input" 
+                               id="loginId" 
+                               placeholder="Enter roll number" 
+                               required
+                               autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" 
+                               class="form-input" 
+                               id="loginPassword" 
+                               placeholder="Enter password" 
+                               required>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        Login
+                    </button>
+                </form>
+                <div class="demo-credentials">
+                    <p><strong>🔑 Demo Credentials:</strong></p>
+                    <p id="demoCredentials">Roll: <code>2021001</code> | Password: <code>student123</code></p>
+                </div>
+                <div class="auth-switch">
+                    <p>Don't have an account? <a href="#" onclick="showPage('registerPage'); return false;">Register here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         REGISTER PAGE
+         ============================================ -->
+    <div id="registerPage" class="page">
+        <div class="login-page">
+            <div class="login-card register-card">
+                <a href="#" onclick="showPage('mainPage'); return false;" class="back-link">
+                    ← Back to Menu
+                </a>
+                <div class="login-logo">
+                    <div class="login-logo-icon animate-bounce-in">🎓</div>
+                    <h2>Create Account</h2>
+                    <p>Join CampusBites and start ordering!</p>
+                </div>
+                <form onsubmit="handleRegister(event)" class="register-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">First Name</label>
+                            <input type="text" 
+                                   class="form-input" 
+                                   id="regFirstName" 
+                                   placeholder="Enter first name" 
+                                   required
+                                   autocomplete="given-name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" 
+                                   class="form-input" 
+                                   id="regLastName" 
+                                   placeholder="Enter last name" 
+                                   required
+                                   autocomplete="family-name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Roll Number</label>
+                        <input type="text" 
+                               class="form-input" 
+                               id="regRollNumber" 
+                               placeholder="e.g., 2024001" 
+                               required
+                               pattern="(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{10}"
+                               title="Roll number must be 10 digits"
+                               autocomplete="off">
+                        <span class="input-hint">10-digit college roll number</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" 
+                               class="form-input" 
+                               id="regEmail" 
+                               placeholder="your.email@college.edu" 
+                               required
+                               autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" 
+                               class="form-input" 
+                               id="regPassword" 
+                               placeholder="Create a password" 
+                               required
+                               minlength="6"
+                               autocomplete="new-password">
+                        <span class="input-hint">Minimum 6 characters</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" 
+                               class="form-input" 
+                               id="regConfirmPassword" 
+                               placeholder="Confirm your password" 
+                               required
+                               autocomplete="new-password">
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="regTerms" required>
+                        <label for="regTerms" class="checkbox-label">
+                            I agree to the <a href="#" onclick="event.stopPropagation();">Terms & Conditions</a>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn-primary btn-register">
+                        <span class="btn-text">Create Account</span>
+                        <span class="btn-loading">Creating...</span>
+                    </button>
+                </form>
+                <div class="auth-switch">
+                    <p>Already have an account? <a href="#" onclick="showPage('loginPage'); return false;">Login here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         ORDERS PAGE
+         ============================================ -->
+    <div id="ordersPage" class="page">
+        <header class="header">
+            <div class="header-content">
+                <a href="#" class="logo" onclick="showPage('mainPage'); return false;">
+                    <div class="logo-icon">🍽️</div>
+                    <div class="logo-text">Campus<span>Bites</span></div>
+                </a>
+                <div class="header-actions">
+                    <button class="nav-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </header>
+        <section class="menu-section">
+            <a href="#" onclick="showPage('mainPage'); return false;" class="back-link">
+                ← Back to Menu
+            </a>
+            <h2 class="section-title">My Orders</h2>
+            <div id="ordersList"></div>
+        </section>
+    </div>
+
+    <!-- ============================================
+         ADMIN PAGE
+         ============================================ -->
+    <div id="adminPage" class="page">
+        <header class="header">
+            <div class="header-content">
+                <a href="#" class="logo" onclick="showPage('mainPage'); return false;">
+                    <div class="logo-icon">🍽️</div>
+                    <div class="logo-text">Campus<span>Bites</span></div>
+                </a>
+                <div class="header-actions">
+                    <button class="nav-btn" onclick="logout()">Admin | Logout</button>
+                </div>
+            </div>
+        </header>
+        <section class="menu-section">
+            <h1 class="admin-title">Admin Dashboard</h1>
+            <p class="admin-subtitle">Manage orders, menu items, and track sales</p>
+            
+            <div class="admin-stats" id="adminStats"></div>
+            
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="setAdminTab('orders')">
+                    📋 Orders
+                </button>
+                <button class="admin-tab" onclick="setAdminTab('menu')">
+                    🍽️ Menu Items
+                </button>
+            </div>
+            
+            <div id="adminContent"></div>
+        </section>
+    </div>
+
+    <!-- ============================================
+         CART MODAL
+         ============================================ -->
+    <div class="modal-overlay" id="cartModal" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="cartTitle">🛒 Your Cart</h2>
+                <button class="modal-close" onclick="closeCart()" aria-label="Close cart">×</button>
+            </div>
+            <div class="modal-body" id="cartBody"></div>
+            <div class="cart-summary" id="cartSummary" style="display:none;">
+                <div class="form-group">
+                    <label class="form-label">⏰ Select Pickup Time</label>
+                    <select class="form-select" id="pickupTime" required>
+                        <option value="">Choose a time slot</option>
+                        <option value="10:00 AM">10:00 AM</option>
+                        <option value="10:30 AM">10:30 AM</option>
+                        <option value="11:00 AM">11:00 AM</option>
+                        <option value="11:30 AM">11:30 AM</option>
+                        <option value="12:00 PM">12:00 PM</option>
+                        <option value="12:30 PM">12:30 PM</option>
+                        <option value="1:00 PM">1:00 PM</option>
+                        <option value="1:30 PM">1:30 PM</option>
+                        <option value="2:00 PM">2:00 PM</option>
+                        <option value="2:30 PM">2:30 PM</option>
+                        <option value="3:00 PM">3:00 PM</option>
+                        <option value="3:30 PM">3:30 PM</option>
+                        <option value="4:00 PM">4:00 PM</option>
+                        <option value="4:30 PM">4:30 PM</option>
+                        <option value="5:00 PM">5:00 PM</option>
+                    </select>
+                </div>
+                <div class="cart-summary-row">
+                    <span>Subtotal</span>
+                    <span id="cartSubtotal">₹0</span>
+                </div>
+                <div class="cart-summary-row">
+                    <span>Service Fee</span>
+                    <span>₹0</span>
+                </div>
+                <div class="cart-summary-row cart-summary-total">
+                    <span>Total</span>
+                    <span id="cartTotal">₹0</span>
+                </div>
+                <button class="btn-primary" onclick="placeOrder()">
+                    🎉 Place Order
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         TOAST NOTIFICATION
+         ============================================ -->
+    <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
